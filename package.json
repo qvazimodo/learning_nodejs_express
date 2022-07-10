@@ -1,0 +1,15 @@
+{
+  "name": "proba1",
+  "version": "1.0.0",
+  "description": "learning nodejs with express",
+  "main": "meadowlark.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "akot4ik",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "express-handlebars": "^6.0.6"
+  }
+}
