@@ -3,6 +3,8 @@ const expressHandlebars = require('express-handlebars')
 
 const app = express()
 
+const fortune = require('./lib/fortune')
+
 
 //Настройка механизма представления Handlebars
 app.engine('handlebars', expressHandlebars.engine(
@@ -17,19 +19,11 @@ const port = process.env.PORT || 3000
 
 app.use(express.static(__dirname + '/public'))
 
-const fortunes = [
-    "Предсказание 1",
-    "Предсказание 2",
-    "Предсказание 3",
-    "Предсказание 4",
-]
-
 
 app.get('/',(req,res)=> res.render('home'))
 
 app.get('/about',(req,res)=> {
-    const randomFortune = fortunes[Math.floor(Math.random()*fortunes.length)]
-    res.render('about', {fortune: randomFortune})
+    res.render('about', {fortune: fortune.getFortune()})
 })
 
 
