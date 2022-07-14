@@ -1,39 +1,34 @@
 const express = require('express')
 const expressHandlebars = require('express-handlebars')
 const handlers = require('./lib/handlers')
+const weatherMiddlware = require('./lib/middleware/weather')
 
 const app = express()
 
 
-expressHandlebars.create({
-        helpers: {
-            section: function(name, options) {
-                if(!this._sections) this._sections = {}
-                this._sections[name] = options.fn(this)
-                return null
-            }
-        }
-})
-
 //Настройка механизма представления Handlebars
-app.engine('handlebars', expressHandlebars.engine(
-    {
-        layoutsDir: "views/layouts",
-        defaultLayout: 'main'
+app.engine('handlebars', expressHandlebars({
+    defaultLayout: 'main',
+    helpers: {
+        section: function(name, options) {
+            if(!this._sections) this._sections = {}
+            this._sections[name] = options.fn(this)
+            return null
+        },
     },
+}))
 
-
-))
 app.set('view engine', "handlebars")
 
 const port = process.env.PORT || 3000
 
 app.use(express.static(__dirname + '/public'))
+app.use(weatherMiddlware)
 
 
 app.get('/',handlers.home)
 app.get('/about',handlers.about)
-app.get('/jquery',handlers.jquery)
+app.get('/section-test',handlers.sectionTest)
 
 app.get('/headers', (req,res) =>{
 console.log(res)
