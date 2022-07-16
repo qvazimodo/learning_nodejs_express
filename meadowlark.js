@@ -2,6 +2,7 @@ const express = require('express')
 const expressHandlebars = require('express-handlebars')
 const handlers = require('./lib/handlers')
 const weatherMiddlware = require('./lib/middleware/weather')
+const bodyParser = require('body-parser')
 
 const app = express()
 
@@ -19,6 +20,8 @@ app.engine('handlebars', expressHandlebars({
 }))
 
 app.set('view engine', "handlebars")
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 
 const port = process.env.PORT || 3000
 
@@ -27,6 +30,11 @@ app.use(weatherMiddlware)
 
 
 app.get('/',handlers.home)
+
+// handlers for fetch/JSON form submission
+app.get('/newsletter', handlers.newsletter)
+app.post('/api/newsletter-signup', handlers.api.newsletterSignup)
+
 app.get('/about',handlers.about)
 app.get('/section-test',handlers.sectionTest)
 
