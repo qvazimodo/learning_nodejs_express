@@ -3,6 +3,7 @@ const expressHandlebars = require('express-handlebars')
 const handlers = require('./lib/handlers')
 const weatherMiddlware = require('./lib/middleware/weather')
 const bodyParser = require('body-parser')
+const multiparty = require('multiparty')
 
 const app = express()
 
@@ -46,7 +47,19 @@ console.log(res)
         .map(([key,value]) => `${key}: ${value}`)
     res.send(headers.join('\n'))
 })
+// vacation photo contest
+app.get('/contest/vacation-photo', handlers.vacationPhotoContest)
 
+app.post('/contest/vacation-photo/:year/:month', (req, res) => {
+    const form = new multiparty.Form()
+    form.parse(req, (err, fields, files) => {
+        if(err) return handlers.vacationPhotoContestProcessError(req, res, err.message)
+        console.log('got fields: ', fields)
+        console.log('and files: ', files)
+        handlers.vacationPhotoContestProcess(req, res, fields, files)
+    })
+})
+app.get('/contest/vacation-photo-thank-you', handlers.vacationPhotoContestProcessThankYou)
 
 // Пользовательсткая страница 404
 app.use(handlers.notFound)
