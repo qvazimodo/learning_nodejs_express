@@ -1,3 +1,4 @@
 # Игнорировать установленные пакеты
 node_modules
 .idea
+config.js

@@ -4,6 +4,8 @@ const handlers = require('./lib/handlers')
 const weatherMiddlware = require('./lib/middleware/weather')
 const bodyParser = require('body-parser')
 const multiparty = require('multiparty')
+const {credentials} = require('./config')
+const cookieParser = require('cookie-parser')
 
 
 const app = express()
@@ -25,6 +27,8 @@ app.set('view engine', "handlebars")
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+app.use(cookieParser(credentials.cookieSecret))
+
 const port = process.env.PORT || 3000
 
 app.use(express.static(__dirname + '/public'))
@@ -43,11 +47,22 @@ app.get('/section-test',handlers.sectionTest)
 app.get('/headers', (req,res) =>{
 console.log(res)
     res.type('text/plan')
-
     const headers = Object.entries(req.headers)
         .map(([key,value]) => `${key}: ${value}`)
     res.send(headers.join('\n'))
 })
+
+app.get('/get-cookie', (req, res) => {
+    console.log('Cookie: ', req.cookies)
+    // res.send('Get Cookie')
+})
+
+app.get('/set-cookie', (req, res) => {
+    res.cookie('token', '12345ABCDE')
+    // res.send('Set Cookie')
+    res.redirect('/')
+})
+
 app.get('/contest/vacation-photo-ajax', handlers.vacationPhotoContestAjax)
 app.post('/api/vacation-photo-contest/:year/:month', (req, res) => {
     const form = new multiparty.Form()
