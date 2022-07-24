@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const multiparty = require('multiparty')
 const {credentials} = require('./config')
 const cookieParser = require('cookie-parser')
+const expressSession = require('express-session')
 
 
 const app = express()
@@ -28,6 +29,11 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 app.use(cookieParser(credentials.cookieSecret))
+app.use(expressSession({
+    resave: false,
+    saveUninitialized: false,
+    secret: credentials.cookieSecret,
+}))
 
 const port = process.env.PORT || 3000
 
